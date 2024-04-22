@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import json
 
-url = 'https://www.immaculategrid.com/hockey'
 
 hart_index = "hart_winner_name"
 vezina_index = "vezina_winner_name"
@@ -56,14 +55,25 @@ hockey_teams = {
         'winnipegjets': 'WPG'
         }
 
-page = requests.get(url).text
-soup = BeautifulSoup(page, 'html.parser')
-
 
 def get_teams():
     team_list = [hockey_teams[i] for i in list(hockey_teams)]
 
     for team in team_list:
-        link = 'https://www.hockey-reference.com/teams/{team}/skaters.html'
+        link = f'https://www.hockey-reference.com/teams/{team}/skaters.html'
+        page = requests.get(link).text
+        soup = BeautifulSoup(page, 'html.parser')
+
+        players = soup.find_all('tr', attrs={'class': False})
+        player_list = []
+        for player in players:
+            stats = player.findChildren()
+            name = stats[1].string
+            start = stats[3].string
+            end = stats[4].string
+            data = (name, start, end)
+            print(data)
+            player_list.append(data)
 
 
+get_teams()
