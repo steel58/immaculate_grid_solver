@@ -71,9 +71,9 @@ def get_teams():
         player_list = []
 
         for player in players:
-            stats = player.findChildren()
-            name = stats[1].string
-            start = stats[3].string
+            stats = player.findChildren(recursive=False)
+            name = stats[1].find('a').string
+            start = stats[2].string
             end = stats[4].string
             data = (name, start, end)
             player_list.append(data)
@@ -94,7 +94,7 @@ def get_teams():
             stats = player.findChildren(recursive=False)
             if stats[1].string == '1':
                 name = stats[3].string
-                player_list.append(data)
+                player_list.append(name)
 
         categories['First Round ' + team] = player_list
         time.sleep(3.1)

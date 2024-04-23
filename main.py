@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import json
-import time
 
 url = 'https://www.immaculategrid.com/hockey'
 
@@ -90,6 +89,13 @@ def get_players():
     return data
 
 
+# Team: (name, start, end)
+# Trophy: (name, team)
+# Career Achievement: (name)
+# Season Acheivement: (name, start, end)
+# Birthplace: (name)
+# First_draft: (name)
+# Hall of Fame: (name)
 def main():
     (top, side) = get_categories(soup)
     print(top, side)
@@ -108,9 +114,23 @@ def main():
 
                 list_c = [i[0] for i in player_dict[column]]
                 for player in list_r:
-                    if player[0] in list_c:
+                    if (player[0] in list_c and not player[0] in used_names):
                         next_name = player[0]
                         break
+
+            if len(row) == 3 or len(column) == 3:
+                if len(row) == 3:
+                    team = row
+                    other = column
+                else:
+                    team = column
+                    other = row
+                if other == "First Round Draft Pick":
+                    player_list = player_dict['First Round ' + team]
+                    for player in player_list:
+                        if not player[0] in used_names:
+                            next_name = player[0]
+                            break
 
             answers[i][j] = next_name
             used_names.append(next_name)
