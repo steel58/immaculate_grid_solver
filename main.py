@@ -94,10 +94,7 @@ def main():
     (top, side) = get_categories(soup)
     print(top, side)
 
-    start = time.time()
     player_dict = get_players()
-    d_time = time.time() - start
-    print(f'It took {d_time}ms to load all player data')
 
     used_names = []
     answers = [['' for i in range(3)] for i in range(3)]
@@ -108,7 +105,6 @@ def main():
             if len(row) == len(column) and len(row) == 3:
                 # Just use names
                 list_r = player_dict[row]
-                print(row, list_r[0])
 
                 list_c = [i[0] for i in player_dict[column]]
                 for player in list_r:
