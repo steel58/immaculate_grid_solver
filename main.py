@@ -97,6 +97,8 @@ def get_players():
 # First_draft: (name)
 # Hall of Fame: (name)
 def main():
+    name_only = ['Hall of Fame', '300+ Winscareer', '1000+ Pointscareer',
+                 '500+ Goalscareer']
     (top, side) = get_categories(soup)
     print(top, side)
 
@@ -107,29 +109,39 @@ def main():
 
     for i, row in enumerate(side):
         for j, column in enumerate(top):
-            next_name = 'None'
+            next_name = 'Noppers'
             if len(row) == len(column) and len(row) == 3:
                 # Just use names
                 list_r = player_dict[row]
 
                 list_c = [i[0] for i in player_dict[column]]
-                for player in list_r:
-                    if (player[0] in list_c and not player[0] in used_names):
-                        next_name = player[0]
+                for p in list_r:
+                    if (p[0] in list_c and p[0] not in used_names):
+                        next_name = p[0]
                         break
 
-            if len(row) == 3 or len(column) == 3:
+            elif len(row) == 3 or len(column) == 3:
+                print("Entered one team mode")
                 if len(row) == 3:
                     team = row
                     other = column
                 else:
                     team = column
                     other = row
+                print(other)
+
                 if other == "First Round Draft Pick":
                     player_list = player_dict['First Round ' + team]
-                    for player in player_list:
-                        if not player[0] in used_names:
-                            next_name = player[0]
+                    for p in player_list:
+                        if not p[0] in used_names:
+                            next_name = p[0]
+                            break
+                elif other in name_only:
+                    other_list = player_dict[other]
+                    team_list = player_dict[team]
+                    for p in team_list:
+                        if (p[0] in other_list and p[0] not in used_names):
+                            next_name = p[0]
                             break
 
             answers[i][j] = next_name

@@ -3,24 +3,6 @@ import requests
 import json
 import time
 
-
-hart_index = "hart_winner_name"
-vezina_index = "vezina_winner_name"
-calder_index = "calder_winner_name"
-norris_index = "norris_winner_name"
-smythe_index = "smythe_winner_name"
-
-goal_leader_id = 'leaders_goals'
-point_leader_id = 'leaders_points'
-wins_leader_id = 'leaders_wins_goalie'
-assists_leader_id = 'leaders_assists'
-hall_of_fame = []
-hart = []
-vezina = []
-calder = []
-norris = []
-smythe = []
-
 hockey_teams = {
         'anaheimducks': 'ANA',
         'arizonacoyotes': 'PHX',
@@ -74,7 +56,24 @@ def get_teams():
             stats = player.findChildren(recursive=False)
             name = stats[1].find('a').string
             start = stats[2].string
-            end = stats[4].string
+            end = stats[3].string
+            data = (name, start, end)
+            player_list.append(data)
+
+        time.sleep(3.1)
+
+        link = f'https://www.hockey-reference.com/teams/{team}/goalies.html'
+        page = requests.get(link).text
+        soup = BeautifulSoup(page, 'html.parser')
+        table = soup.find('tbody')
+        players = table.find_all('tr', attrs={'class': False})
+        player_list = []
+
+        for player in players:
+            stats = player.findChildren(recursive=False)
+            name = stats[1].find('a').string
+            start = stats[2].string
+            end = stats[3].string
             data = (name, start, end)
             player_list.append(data)
 
@@ -119,7 +118,7 @@ def get_season_leads(key, link):
     categories[key] = player_list
 
 
-def get_career_leads(key, link):
+def get_career_leads(key, link, req):
     page = requests.get(link).text
     soup = BeautifulSoup(page, 'html.parser')
 
@@ -128,9 +127,11 @@ def get_career_leads(key, link):
 
     player_list = []
     for row in rows:
-        stats = row.findChildren()
-        name = stats[1].find('a').string
-        player_list.append(name)
+        stats = row.findChildren(recursive=False)
+        number = int(stats[3].string)
+        if number >= req:
+            name = stats[1].find('a').string
+            player_list.append(name)
 
     categories[key] = player_list
 
@@ -247,15 +248,15 @@ def main():
     w_link = 'https://www.hockey-reference.com/leaders/wins_goalie_career.html'
 
     print("    >Geting 500+ goal career...(4/16)\n")
-    get_career_leads('500+ Goalscareer', goals_link)
+    get_career_leads('500+ Goalscareer', goals_link, 500)
     time.sleep(3.1)
 
     print("    >Geting 1000+ point career...(5/16)\n")
-    get_career_leads('1000+ Pointscareer', points_link)
+    get_career_leads('1000+ Pointscareer', points_link, 1000)
     time.sleep(3.1)
 
     print("    >Geting 300+ win career...(6/16)\n")
-    get_career_leads('300+ Winscareer', w_link)
+    get_career_leads('300+ Winscareer', w_link, 300)
     time.sleep(3.1)
 
     byng_link = 'https://www.hockey-reference.com/awards/byng.html'
