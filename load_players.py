@@ -67,7 +67,6 @@ def get_teams():
         soup = BeautifulSoup(page, 'html.parser')
         table = soup.find('tbody')
         players = table.find_all('tr', attrs={'class': False})
-        player_list = []
 
         for player in players:
             stats = player.findChildren(recursive=False)
@@ -80,6 +79,8 @@ def get_teams():
         categories[team] = player_list
         time.sleep(3.1)
 
+    first_rounders = []
+
     for team in team_list:
         link = f'https://www.hockey-reference.com/teams/{team}/draft.html'
         page = requests.get(link).text
@@ -87,16 +88,17 @@ def get_teams():
 
         table = soup.find('tbody')
         players = table.find_all('tr', attrs={'class': False})
-        player_list = []
 
         for player in players:
             stats = player.findChildren(recursive=False)
             if stats[1].string == '1':
                 name = stats[3].string
-                player_list.append(name)
+                data = (name, team)
+                first_rounders.append(name)
 
-        categories['First Round ' + team] = player_list
         time.sleep(3.1)
+
+    categories['First Round Draft Pick'] = first_rounders
 
 
 def get_season_leads(key, link):
@@ -111,8 +113,7 @@ def get_season_leads(key, link):
         stats = row.findChildren(recursive=False)
         name = stats[1].find('a').string
         start = stats[3].string[:4]
-        end = str(int(start) + 1)
-        data = (name, start, end)
+        data = (name, start)
         player_list.append(data)
 
     categories[key] = player_list
@@ -230,16 +231,22 @@ def main():
     goals_link = 'https://www.hockey-reference.com/leaders/goals_season.html'
     points_link = 'https://www.hockey-reference.com/leaders/points_season.html'
     w_link = 'https://www.hockey-reference.com/leaders/wins_goalie_season.html'
+    assist_link = 'https://www.hockey-reference.com/leaders/assists_season.html'
+    # WE NEED TO GET ASSIST HOLDERS
 
-    print("    >Geting 40+ goal scorers...(1/16)\n")
+    print("    >Geting 40+ goal scorers...(1/17)\n")
     get_season_leads('40+ Goalsseason', goals_link)
     time.sleep(3.1)
 
-    print("    >Geting 100+ point scorers...(2/16)\n")
+    print("    >Gettin 50+ assist scorers...(2/17)")
+    get_season_leads('50+ Assistsseason', assist_link)
+    time.sleep(3.1)
+
+    print("    >Geting 100+ point scorers...(3/17)\n")
     get_season_leads('100+ Pointsseason', points_link)
     time.sleep(3.1)
 
-    print("    >Geting 30+ win goalies...(3/16)\n")
+    print("    >Geting 30+ win goalies...(4/17)\n")
     get_season_leads('30+ Winsseason', w_link)
     time.sleep(3.1)
 
@@ -247,15 +254,15 @@ def main():
     points_link = 'https://www.hockey-reference.com/leaders/points_career.html'
     w_link = 'https://www.hockey-reference.com/leaders/wins_goalie_career.html'
 
-    print("    >Geting 500+ goal career...(4/16)\n")
+    print("    >Geting 500+ goal career...(5/17)\n")
     get_career_leads('500+ Goalscareer', goals_link, 500)
     time.sleep(3.1)
 
-    print("    >Geting 1000+ point career...(5/16)\n")
+    print("    >Geting 1000+ point career...(6/17)\n")
     get_career_leads('1000+ Pointscareer', points_link, 1000)
     time.sleep(3.1)
 
-    print("    >Geting 300+ win career...(6/16)\n")
+    print("    >Geting 300+ win career...(7/17)\n")
     get_career_leads('300+ Winscareer', w_link, 300)
     time.sleep(3.1)
 
@@ -267,43 +274,43 @@ def main():
     norris_link = 'https://www.hockey-reference.com/awards/norris.html'
     smythe_link = 'https://www.hockey-reference.com/awards/smythe.html'
 
-    print("    >Geting Lady Byng Trophy winners...(7/16)\n")
+    print("    >Geting Lady Byng Trophy winners...(8/17)\n")
     get_season_trophies('Lady Byng Trophy', byng_link)
     time.sleep(3.1)
 
-    print("    >Geting Art Ross Trophy winners...(8/16)\n")
+    print("    >Geting Art Ross Trophy winners...(9/17)\n")
     get_season_trophies('Art Ross Trophy', ross_link)
     time.sleep(3.1)
 
-    print("    >Geting Hart Trophy winners...(9/16)\n")
+    print("    >Geting Hart Trophy winners...(10/17)\n")
     get_season_trophies('Hart Trophy', hart_link)
     time.sleep(3.1)
 
-    print("    >Geting Calder Trophy winners...(10/16)\n")
+    print("    >Geting Calder Trophy winners...(11/17)\n")
     get_season_trophies('Calder Trophy', calder_link)
     time.sleep(3.1)
 
-    print("    >Geting Vezina Trophy winners...(11/16)\n")
+    print("    >Geting Vezina Trophy winners...(12/17)\n")
     get_season_trophies('Vezina Trophy', vezina_link)
     time.sleep(3.1)
 
-    print("    >Geting Norris Trophy winners...(12/16)\n")
+    print("    >Geting Norris Trophy winners...(13/17)\n")
     get_season_trophies('Norris Trophy', norris_link)
     time.sleep(3.1)
 
-    print("    >Geting Conn Smythe Trophy winners...(13/16)\n")
+    print("    >Geting Conn Smythe Trophy winners...(14/17)\n")
     get_season_trophies('Conn Smythe Trophy', smythe_link)
     time.sleep(3.1)
 
-    print("    >Geting all players and first round draft picks...(14/16)\n")
+    print("    >Geting all players and first round draft picks...(15/17)\n")
     get_teams()
     time.sleep(3.1)
 
-    print("    >Getting all hall of fame winners...(15/16)\n")
+    print("    >Getting all hall of fame winners...(16/17)\n")
     get_hof()
     time.sleep(3.1)
 
-    print("    >Geting birthplace data...(16/16)\n")
+    print("    >Geting birthplace data...(17/17)\n")
     get_birth_places()
     time.sleep(3.1)
 
@@ -315,6 +322,13 @@ def main():
         outfile.write(data)
 
     print("Data written to file, complete")
+
+
+def remove_category(category):
+    with open('data.json', 'r') as data:
+        categories = json.load(data)
+    categories.pop(category)
+    print(f'Removed {category} from dictionary')
 
 
 main()
