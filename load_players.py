@@ -80,7 +80,6 @@ def get_teams():
         time.sleep(3.1)
 
     first_rounders = []
-
     for team in team_list:
         link = f'https://www.hockey-reference.com/teams/{team}/draft.html'
         page = requests.get(link).text
@@ -91,10 +90,10 @@ def get_teams():
 
         for player in players:
             stats = player.findChildren(recursive=False)
-            if stats[1].string == '1':
+            if stats[1].string == '1' and stats[8].string is not None:
                 name = stats[3].string
                 data = (name, team)
-                first_rounders.append(name)
+                first_rounders.append(data)
 
         time.sleep(3.1)
 

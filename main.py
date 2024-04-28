@@ -109,7 +109,7 @@ def one_team_prompts(team, other, player_dict, used_names):
     elif "Trophy" in other or 'First Round Draft Pick' == other:
         player_list = player_dict[other]
         for p in player_list:
-            if p[1] == team:
+            if p[1] == team and p[0] not in used_names:
                 return p[0]
 
     elif "season" in other:
@@ -119,7 +119,7 @@ def one_team_prompts(team, other, player_dict, used_names):
 
         for p in team_list:
             name = p[0]
-            if name in names_other:
+            if name in names_other and name not in used_names:
                 index = names_other.index(name)
                 team_start = int(p[1])
                 team_end = int(p[2])
@@ -144,7 +144,7 @@ def no_team_prompts(prompt1, prompt2, player_dict, used_names):
         player_list_2 = list_2
 
     for name in player_list_1:
-        if name in player_list_2 and name in used_names:
+        if name in player_list_2 and name not in used_names:
             return name
 
 
