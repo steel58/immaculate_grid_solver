@@ -183,6 +183,8 @@ def get_birth_places():
 
     base_link = 'https://www.hockey-reference.com'
 
+    player_list = []
+
     for link in count_links:
         new_page = requests.get(base_link + link).text
         new_soup = BeautifulSoup(new_page, 'html.parser')
@@ -190,7 +192,6 @@ def get_birth_places():
         table = new_soup.find('tbody')
         rows = table.find_all('tr', attrs={'class': False})
 
-        player_list = []
         for row in rows:
             stats = row.findChildren(recursive=False)
             name = stats[1].string
@@ -213,7 +214,6 @@ def get_birth_places():
         table = new_soup.find('tbody')
         rows = table.find_all('tr', attrs={'class': False})
 
-        player_list = []
         for row in rows:
             stats = row.findChildren(recursive=False)
             name = stats[1].string
@@ -237,7 +237,7 @@ def main():
     get_season_leads('40+ Goalsseason', goals_link)
     time.sleep(3.1)
 
-    print("    >Gettin 50+ assist scorers...(2/17)")
+    print("    >Gettin 50+ assist scorers...(2/17)\n")
     get_season_leads('50+ Assistsseason', assist_link)
     time.sleep(3.1)
 
@@ -246,7 +246,7 @@ def main():
     time.sleep(3.1)
 
     print("    >Geting 30+ win goalies...(4/17)\n")
-    get_season_leads('30+ Winsseason', w_link)
+    get_season_leads('30+ Winseason', w_link)
     time.sleep(3.1)
 
     goals_link = 'https://www.hockey-reference.com/leaders/goals_career.html'
@@ -254,7 +254,7 @@ def main():
     w_link = 'https://www.hockey-reference.com/leaders/wins_goalie_career.html'
 
     print("    >Geting 500+ goal career...(5/17)\n")
-    get_career_leads('500+ Goalscareer', goals_link, 500)
+    get_career_leads('500+ Goalscareer\n', goals_link, 500)
     time.sleep(3.1)
 
     print("    >Geting 1000+ point career...(6/17)\n")
@@ -313,14 +313,14 @@ def main():
     get_birth_places()
     time.sleep(3.1)
 
-    print("    >Serializing data...")
+    print("    >Serializing data...\n")
     data = json.dumps(categories, indent=2)
 
-    print("    >Writing to file...")
+    print("    >Writing to file...\n")
     with open('data.json', 'w') as outfile:
         outfile.write(data)
 
-    print("Data written to file, complete")
+    print("Data written to file, complete\n")
 
 
 def remove_category(category):
@@ -330,4 +330,5 @@ def remove_category(category):
     print(f'Removed {category} from dictionary')
 
 
-main()
+if __name__ == "__main__":
+    main()
